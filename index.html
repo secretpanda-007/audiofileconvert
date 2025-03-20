@@ -21,19 +21,25 @@
                 method: 'POST',
                 body: formData
             })
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Server error: ${response.status}`);
+                }
+                return response.json();
+            })
             .then(data => {
                 if (data.url) {
                     const link = document.createElement('a');
                     link.href = data.url;
                     link.textContent = 'Download converted file';
+                    document.getElementById('result').innerHTML = '';
                     document.getElementById('result').appendChild(link);
                 } else {
                     document.getElementById('result').textContent = 'Error: ' + data.error;
                 }
             })
             .catch(error => {
-                document.getElementById('result').textContent = 'Error: ' + error;
+                document.getElementById('result').textContent = 'Fetch error: ' + error.message;
             });
         });
     </script>
